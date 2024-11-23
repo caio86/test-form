@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+if [[ ! -d "/home/caiol/projetos/test-form" ]]; then
+  echo "Cannot find source directory; Did you move it?"
+  echo "(Looking for "/home/caiol/projetos/test-form")"
+  echo 'Cannot force reload with this script - use "direnv reload" manually and then try again'
+  exit 1
+fi
+
+# rebuild the cache forcefully
+_nix_direnv_force_reload=1 direnv exec "/home/caiol/projetos/test-form" true
+
+# Update the mtime for .envrc.
+# This will cause direnv to reload again - but without re-building.
+touch "/home/caiol/projetos/test-form/.envrc"
+
+# Also update the timestamp of whatever profile_rc we have.
+# This makes sure that we know we are up to date.
+touch -r "/home/caiol/projetos/test-form/.envrc" "/home/caiol/projetos/test-form/.direnv"/*.rc
